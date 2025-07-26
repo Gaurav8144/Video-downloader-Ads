@@ -1,1 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Basic Meta -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>YouTube & Instagram Video Downloader - Free HD Video Save</title>
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Download videos from YouTube, Instagram, Facebook, and more in HD for free. No registration. Fast & secure downloader." />
+    <meta name="keywords" content="YouTube video downloader, Instagram downloader, video download HD, save videos online, all video downloader, facebook video download" />
+    <meta name="robots" content="index, follow" />
+    <meta name="author" content="All-in-One Video Downloader" />
+    <meta name="google-site-verification" content="ODp-h1vorO8rVuwFsXpT99aWFfU3ZLRdoFfsSaB8bqI" />
+    <!-- Open Graph -->
+    <meta property="og:title" content="All-in-One Video Downloader - Save Videos Easily" />
+    <meta property="og:description" content="Download HD videos from YouTube, Instagram and more with one click." />
+    <meta property="og:url" content="https://all-video-downloader-synl.onrender.com" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://all-video-downloader-synl.onrender.com/logo.png" />
+    <link rel="icon" href="/favicon.ico" />
+    <!-- CSS -->
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(to right, #1e90ff, #ff0000);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .container {
+        margin-top: 100px;
+      }
+      input {
+        padding: 10px;
+        width: 300px;
+        font-size: 16px;
+        border-radius: 5px;
+        border: 1px solid #aaa;
+        margin-top: 20px;
+      }
+      button {
+        margin-top: 15px;
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: green;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #10c11e;
+      }
+      .msg {
+        margin-top: 20px;
+        font-size: 18px;
+        color: #fff;
+      }
+      a {
+        color: yellow;
+        font-weight: bold;
+      }
+    </style>
+  </head>
 
+  <body>
+    <!-- ✅ Downloader UI -->
+    <div class="container">
+      <input type="text" id="videoLink" placeholder="Paste any video link (Instagram, YouTube, etc.)" />
+      <br />
+      <button onclick="downloadVideo()">Download</button>
+      <div class="msg" id="message"></div>
+    </div>
+
+    <!-- ✅ Script -->
+    <script>
+      async function downloadVideo() {
+        const url = document.getElementById("videoLink").value.trim();
+        const msg = document.getElementById("message");
+
+        if (!url) {
+          msg.innerHTML = "<b style='color: orange;'>Please paste a video link first!</b>";
+          return;
+        }
+
+        msg.innerHTML = "<b style='color: yellow;'>Downloading started...</b>";
+
+        try {
+          const res = await fetch("/download", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ url })
+          });
+
+          const data = await res.json();
+
+          if (data.status === "success") {
+            msg.innerHTML = `<b style='color: lightgreen;'>Download ready: <a href="${data.file_url}" download>Click here</a></b>`;
+          } else {
+            msg.innerHTML = `<b style='color: orange;'>Error: ${data.message}</b>`;
+          }
+        } catch (err) {
+          msg.innerHTML = "<b style='color: red;'>Something went wrong. Please try again.</b>";
+        }
+      }
+    </script>
+  </body>
+        </html>
