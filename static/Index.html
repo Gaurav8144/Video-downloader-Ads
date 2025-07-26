@@ -1,41 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <!-- Basic Meta -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>YouTube & Instagram Video Downloader - Free HD Video Save</title>
-    <!-- SEO Meta Tags -->
-    <meta name="description" content="Download videos from YouTube, Instagram, Facebook, and more in HD for free. No registration. Fast & secure downloader." />
-    <meta name="keywords" content="YouTube video downloader, Instagram downloader, video download HD, save videos online, all video downloader, facebook video download" />
-    <meta name="robots" content="index, follow" />
-    <meta name="author" content="All-in-One Video Downloader" />
-    <meta name="google-site-verification" content="ODp-h1vorO8rVuwFsXpT99aWFfU3ZLRdoFfsSaB8bqI" />
-    <!-- Open Graph -->
-    <meta property="og:title" content="All-in-One Video Downloader - Save Videos Easily" />
-    <meta property="og:description" content="Download HD videos from YouTube, Instagram and more with one click." />
-    <meta property="og:url" content="https://all-video-downloader-synl.onrender.com" />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://all-video-downloader-synl.onrender.com/logo.png" />
-    <link rel="icon" href="/favicon.ico" />
-    <!-- CSS -->
+    <title>Video Downloader</title>
+
     <style>
       body {
         font-family: Arial, sans-serif;
-        text-align: center;
         margin: 0;
         padding: 0;
         background: linear-gradient(to right, #1e90ff, #ff0000);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+        overflow-x: hidden;
+      }
+      .sidebar-ads {
+        position: fixed;
+        left: 0;
+        top: 100px;
+        z-index: 9999;
+        display: none;
+      }
+      @media (min-width: 768px) {
+        .sidebar-ads {
+          display: block;
+        }
+      }
+      .sidebar-ads .ad-slot {
+        margin-bottom: 20px;
+      }
+      .top-banner {
+        width: 100%;
+        text-align: center;
+        padding: 10px 0;
+        background-color: transparent;
       }
       .container {
-        margin-top: 100px;
+        margin: 20px auto;
+        text-align: center;
+        width: 100%;
       }
       input {
         padding: 10px;
-        width: 300px;
+        width: 80%;
+        max-width: 400px;
         font-size: 16px;
         border-radius: 5px;
         border: 1px solid #aaa;
@@ -59,23 +66,110 @@
         font-size: 18px;
         color: #fff;
       }
-      a {
-        color: yellow;
-        font-weight: bold;
+      .bottom-sticky-ad {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        text-align: center;
+        z-index: 9999;
+        height: 50px;
+        background-color: transparent;
+      }
+      .bottom-sticky-ad iframe {
+        width: 320px;
+        height: 50px;
+      }
+      .middle-banner {
+        margin-top: 20px;
+        text-align: center;
       }
     </style>
   </head>
 
   <body>
-    <!-- ✅ Downloader UI -->
+    <!-- Sidebar Stacked Ads -->
+    <div class="sidebar-ads">
+      <div class="ad-slot">
+        <script type="text/javascript">
+          atOptions = {
+            'key' : '2c61be942fcd1cac5416e6fdfe3626b1',
+            'format' : 'iframe',
+            'height' : 600,
+            'width' : 160,
+            'params' : {}
+          };
+        </script>
+        <script src="//www.highperformanceformat.com/2c61be942fcd1cac5416e6fdfe3626b1/invoke.js"></script>
+      </div>
+
+      <div class="ad-slot">
+        <script type="text/javascript">
+          atOptions = {
+            'key' : '01256ae890f32ed60e2cd846d4c8e1ab',
+            'format' : 'iframe',
+            'height' : 300,
+            'width' : 160,
+            'params' : {}
+          };
+        </script>
+        <script src="//www.highperformanceformat.com/01256ae890f32ed60e2cd846d4c8e1ab/invoke.js"></script>
+      </div>
+    </div>
+
+    <!-- Top Banner Ad -->
+    <div class="top-banner">
+      <script type="text/javascript">
+        atOptions = {
+          'key' : 'aa827f61976e252320b10c1947bffc80',
+          'format' : 'iframe',
+          'height' : 250,
+          'width' : 300,
+          'params' : {}
+        };
+      </script>
+      <script src="//www.highperformanceformat.com/aa827f61976e252320b10c1947bffc80/invoke.js"></script>
+    </div>
+
+    <!-- Main Downloader UI -->
     <div class="container">
       <input type="text" id="videoLink" placeholder="Paste any video link (Instagram, YouTube, etc.)" />
       <br />
       <button onclick="downloadVideo()">Download</button>
       <div class="msg" id="message"></div>
+
+      <!-- Middle Banner Ad -->
+      <div class="middle-banner">
+        <script type="text/javascript">
+          atOptions = {
+            'key' : '6aac2504dee05ad15ae77e993b7a2278',
+            'format' : 'iframe',
+            'height' : 90,
+            'width' : 728,
+            'params' : {}
+          };
+        </script>
+        <script src="//www.highperformanceformat.com/6aac2504dee05ad15ae77e993b7a2278/invoke.js"></script>
+      </div>
     </div>
 
-    <!-- ✅ Script -->
+    <!-- Bottom Sticky Ad -->
+    <div class="bottom-sticky-ad">
+      <script type="text/javascript">
+        atOptions = {
+          'key' : 'bb922fe50a1c88a110f2d0f6dcff1b1c',
+          'format' : 'iframe',
+          'height' : 50,
+          'width' : 320,
+          'params' : {}
+        };
+      </script>
+      <script src="//www.highperformanceformat.com/bb922fe50a1c88a110f2d0f6dcff1b1c/invoke.js"></script>
+    </div>
+
+    <!-- Social Bar Code (Floating) -->
+    <script type='text/javascript' src='//pl27265596.profitableratecpm.com/af/25/a3/af25a32c7a86930c567c0ba962e9b471.js'></script>
+
+    <!-- Download Script -->
     <script>
       async function downloadVideo() {
         const url = document.getElementById("videoLink").value.trim();
@@ -108,4 +202,4 @@
       }
     </script>
   </body>
-        </html>
+</html>
