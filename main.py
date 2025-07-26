@@ -1,61 +1,84 @@
-from fastapi import FastAPI, Request, HTTPException from fastapi.middleware.cors import CORSMiddleware from fastapi.responses import FileResponse, JSONResponse from fastapi.staticfiles import StaticFiles import os import uuid import subprocess import threading import time
+from fastapi import FastAPI, Request, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
+
+import os
+import uuid
+import subprocess
+import threading
+import time
 
 app = FastAPI()
 
-Enable CORS
+# ✅ CORS for frontend access
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-app.add_middleware( CORSMiddleware, allow_origins=[""], allow_methods=[""], allow_headers=["*"], )
+# ✅ Folder for temporary video downloads
+DOWNLOAD_FOLDER = "downloads"
+os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
 
-Create downloads folder if not exists
-
-DOWNLOAD_FOLDER = "downloads" os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
-
-Serve static files (index.html)
-
+# ✅ Mount static folder and serve index.html at "/"
 app.mount("/", StaticFiles(directory="static", html=True), name="static")
 
-Serve robots.txt
+# ✅ Serve robots.txt (optional)
+@app.get("/robots.txt", include_in_schema=False)
+async def serve_robots():
+    return FileResponse("robots.txt", media_type="text/plain")
 
-@app.get("/robots.txt", include_in_schema=False) async def serve_robots(): return FileResponse("robots.txt", media_type="text/plain")
+# ✅ Auto delete file after 10 sec
+def delete_file_later(path, delay=10):
+    def remove():
+        time.sleep(delay)
+        if os.path.exists(path):
+            os.remove(path)
+    threading.Thread(target=remove, daemon=True).start()
 
-Delete file after a delay
+# ✅ Download route
+@app.post("/download")
+async def download_video(request: Request):
+    try:
+        data = await request.json()
+        url = data.get("url")
 
-def delete_file_later(path, delay=10): def remove(): time.sleep(delay) if os.path.exists(path): os.remove(path) threading.Thread(target=remove, daemon=True).start()
+        if not url:
+            raise HTTPException(status_code=400, detail="❌ URL required")
 
-Video download API
+        filename = f"{uuid.uuid4()}.mp4"
+        filepath = os.path.join(DOWNLOAD_FOLDER, filename)
 
-@app.post("/download") async def download_video(request: Request): try: data = await request.json() url = data.get("url")
+        result = subprocess.run(
+            ["yt-dlp", "-f", "mp4", "-o", filepath, url],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE
+        )
 
-if not url:
-        raise HTTPException(status_code=400, detail="\u274c URL required")
+        if result.returncode != 0:
+            raise HTTPException(status_code=500, detail=f"Download failed: {result.stderr.decode()}")
 
-    filename = f"{uuid.uuid4()}.mp4"
-    filepath = os.path.join(DOWNLOAD_FOLDER, filename)
+        delete_file_later(filepath, delay=10)
 
-    result = subprocess.run(
-        ["yt-dlp", "-f", "mp4", "-o", filepath, url],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE
-    )
+        return {
+            "status": "success",
+            "file_url": f"/downloaded/{filename}",
+            "filename": filename
+        }
 
-    if result.returncode != 0:
-        raise HTTPException(status_code=500, detail=f"Download failed: {result.stderr.decode()}")
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={"status": "error", "message": str(e)}
+        )
 
-    delete_file_later(filepath, delay=10)
-
-    return {
-        "status": "success",
-        "file_url": f"/downloaded/{filename}",
-        "filename": filename
-    }
-
-except Exception as e:
-    return JSONResponse(
-        status_code=500,
-        content={"status": "error", "message": str(e)}
-    )
-
-Serve downloaded video files
-
-@app.get("/downloaded/{filename}", response_class=FileResponse) async def serve_file(filename: str): path = os.path.join(DOWNLOAD_FOLDER, filename) if os.path.exists(path): return FileResponse(path, media_type="video/mp4", filename=filename) raise HTTPException(status_code=404, detail="File not found")
-
+# ✅ Serve downloaded video
+@app.get("/downloaded/{filename}", response_class=FileResponse)
+async def serve_file(filename: str):
+    path = os.path.join(DOWNLOAD_FOLDER, filename)
+    if os.path.exists(path):
+        return FileResponse(path, media_type="video/mp4", filename=filename)
+    raise HTTPException(status_code=404, detail="File not found")
